@@ -1262,9 +1262,17 @@ function _shareOrShow(content, filename, title, isJson){
           previewHTML+
           '<div style="display:flex;flex-direction:column;gap:8px">'+
 
-            // Кнопка Поділитись — через Android share
-            '<button id="_btnShare" style="width:100%;padding:14px;background:#25D366;border:none;color:#fff;font-weight:700;font-size:14px;border-radius:8px;cursor:pointer">'+
-              '\uD83D\uDCE4 \u041F\u043E\u0434\u0456\u043B\u0438\u0442\u0438\u0441\u044C \u0447\u0435\u0440\u0435\u0437 Telegram / Viber</button>'+
+            // Кнопка Telegram
+            '<button id="_btnTelegram" style="width:100%;padding:13px;background:#2AABEE;border:none;color:#fff;font-weight:700;font-size:14px;border-radius:8px;cursor:pointer;margin-bottom:0">'+
+              '\u2708\uFE0F \u041D\u0430\u0434\u0456\u0441\u043B\u0430\u0442\u0438 \u0432 Telegram</button>'+
+
+            // Кнопка Viber
+            '<button id="_btnViber" style="width:100%;padding:13px;background:#7360F2;border:none;color:#fff;font-weight:700;font-size:14px;border-radius:8px;cursor:pointer">'+
+              '\uD83D\uDCF2 \u041D\u0430\u0434\u0456\u0441\u043B\u0430\u0442\u0438 \u0432 Viber</button>'+
+
+            // Кнопка WhatsApp
+            '<button id="_btnWhatsApp" style="width:100%;padding:13px;background:#25D366;border:none;color:#fff;font-weight:700;font-size:14px;border-radius:8px;cursor:pointer">'+
+              '\uD83D\uDCAC \u041D\u0430\u0434\u0456\u0441\u043B\u0430\u0442\u0438 \u0432 WhatsApp</button>'+
 
             // Кнопка Копіювати текст
             '<button id="_btnCopy" style="width:100%;padding:12px;background:#444;border:none;color:#fff;font-size:13px;border-radius:8px;cursor:pointer">'+
@@ -1280,22 +1288,35 @@ function _shareOrShow(content, filename, title, isJson){
 
     document.body.appendChild(ov);
 
-    // Кнопка Поділитись
-    document.getElementById('_btnShare').addEventListener('click',function(){
-      if(navigator.share){
-        navigator.share({title:title,text:readableText})
-          .then(function(){showQuickToast('\u2705 \u041f\u043e\u0434\u0456\u043b\u0435\u043d\u043e!');})
-          .catch(function(e){
-            if(e&&e.name!=='AbortError'){
-              // share не спрацював — копіюємо
-              copyText(readableText);
-            }
-          });
-      }else{
-        // WebView не підтримує share — копіюємо
+    // Telegram
+    document.getElementById('_btnTelegram').addEventListener('click',function(){
+      var enc=encodeURIComponent(readableText.substring(0,4000));
+      window.location.href='tg://msg?text='+enc;
+      setTimeout(function(){
+        // Якщо Telegram не відкрився — копіюємо
+        showQuickToast('\uD83D\uDCCB \u0422\u0435\u043a\u0441\u0442 \u0441\u043a\u043e\u043f\u0456\u0439\u043e\u0432\u0430\u043d\u043e. \u0412\u0441\u0442\u0430\u0432\u0442\u0435 \u0432 Telegram');
         copyText(readableText);
-        showQuickToast('\uD83D\uDCCB \u0422\u0435\u043a\u0441\u0442 \u0441\u043a\u043e\u043f\u0456\u0439\u043e\u0432\u0430\u043d\u043e \u2014 \u0432\u0441\u0442\u0430\u0432\u0442\u0435 \u0432 Telegram');
-      }
+      },1500);
+    });
+
+    // Viber
+    document.getElementById('_btnViber').addEventListener('click',function(){
+      var enc=encodeURIComponent(readableText.substring(0,4000));
+      window.location.href='viber://forward?text='+enc;
+      setTimeout(function(){
+        showQuickToast('\uD83D\uDCCB \u0422\u0435\u043a\u0441\u0442 \u0441\u043a\u043e\u043f\u0456\u0439\u043e\u0432\u0430\u043d\u043e. \u0412\u0441\u0442\u0430\u0432\u0442\u0435 \u0432 Viber');
+        copyText(readableText);
+      },1500);
+    });
+
+    // WhatsApp
+    document.getElementById('_btnWhatsApp').addEventListener('click',function(){
+      var enc=encodeURIComponent(readableText.substring(0,4000));
+      window.location.href='whatsapp://send?text='+enc;
+      setTimeout(function(){
+        showQuickToast('\uD83D\uDCCB \u0422\u0435\u043a\u0441\u0442 \u0441\u043a\u043e\u043f\u0456\u0439\u043e\u0432\u0430\u043d\u043e. \u0412\u0441\u0442\u0430\u0432\u0442\u0435 \u0432 WhatsApp');
+        copyText(readableText);
+      },1500);
     });
 
     // Кнопка Копіювати текст
